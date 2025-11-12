@@ -1,0 +1,19 @@
+server:
+  port: 443
+  
+spring:
+  cloud:
+    gateway:      
+      server: 
+        webflux:
+          discovery:
+            locator:
+              
+              enabled: true 
+              
+              lower-case-service-id: true 
+              
+      default-filters:
+        - RewritePath: 
+            regexp: ^/.*?/(?<remaining>.*)$
+            replacement: /${remaining}
