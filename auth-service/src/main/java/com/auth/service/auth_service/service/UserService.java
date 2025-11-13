@@ -6,6 +6,7 @@ import com.auth.service.auth_service.model.UserApp;
 import com.auth.service.auth_service.repository.IRoleRepository;
 import com.auth.service.auth_service.repository.IUserAppRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -18,6 +19,7 @@ public class UserService implements IUserAppService {
 
     private final IUserAppRepository userAppRepository;
     private final IRoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserApp> findAll() {
@@ -33,6 +35,7 @@ public class UserService implements IUserAppService {
     @Override
     public UserApp save(UserApp userApp) {
         UserApp userAppValidate = this.validateRoleExists(userApp);
+        userAppValidate.setPassword(passwordEncoder.encode(userAppValidate.getPassword()));
         return userAppRepository.save(userAppValidate);
     }
 
@@ -48,9 +51,8 @@ public class UserService implements IUserAppService {
     public UserApp updateById(Long id, UserApp userApp) {
 
         UserApp userAppFound = this.findById(id);
-
         UserApp userAppValidate = this.validateRoleExists(userAppFound);
-
+        userAppValidate.setPassword(passwordEncoder.encode(userAppValidate.getPassword()));
         return userAppRepository.save(userAppValidate);
     }
 
