@@ -7,7 +7,6 @@ import com.product_service.product_service.mapper.IProductMapper;
 import com.product_service.product_service.model.Product;
 import com.product_service.product_service.repository.IProductRepository;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.MappingTarget;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
