@@ -1,7 +1,9 @@
 package com.product_service.product_service.service;
 
+import com.product_service.product_service.client.IStockClient;
 import com.product_service.product_service.dto.ProductRequestDTO;
 import com.product_service.product_service.dto.ProductResponseDTO;
+import com.product_service.product_service.dto.StockResponseDTO;
 import com.product_service.product_service.exception.ResourceNotFoundException;
 import com.product_service.product_service.mapper.IProductMapper;
 import com.product_service.product_service.model.Product;
@@ -9,18 +11,47 @@ import com.product_service.product_service.repository.IProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService implements IProductService{
 
     private final IProductRepository productRepository;
+    private final IStockClient stockClient;
     private final IProductMapper productMapper;
 
     @Override
     public List<ProductResponseDTO> findAll() {
-        return productMapper.toProductResponseDTOList(productRepository.findAll());
+
+        List<Product> products = productRepository.findAll();
+        List<ProductResponseDTO> productDTOs = productMapper.toProductResponseDTOList(products);
+
+        // Obtener lista de stocks del Feign
+        List<StockResponseDTO> stockList = stockClient.findAll();
+
+        // Convertir stock list → mapa para buscar rápido
+        Map<Long, StockResponseDTO> stockMap = stockList.stream()
+                .collect(Collectors.toMap(StockResponseDTO::getProductId, s -> s));
+
+        // Completar los productos con info del stock
+        for (ProductResponseDTO dto : productDTOs) {
+
+            StockResponseDTO stock = stockMap.get(dto.getProductId());
+
+            if (stock != null) {
+                dto.setStock(stock.getQuantity());
+                dto.setStockStatus(stock.getStatus());
+            } else {
+                dto.setStock(0);
+                dto.setStockStatus("UNAVAILABLE");
+            }
+        }
+
+        return productDTOs;
     }
 
     @Override

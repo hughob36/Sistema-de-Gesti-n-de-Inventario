@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class ProductResponseDTO {
 
     private Long id;
-    private String code;
+    private Long productId;
     private String name;
     private String description;
     private BigDecimal price;
@@ -24,7 +24,7 @@ public class ProductResponseDTO {
     private Integer minStock;
 
     // Información de stock (viene del stock-check-service)
-    private Integer currentStock;
+    private Integer stock;
     private String stockStatus; // "AVAILABLE", "LOW_STOCK", "OUT_OF_STOCK", "UNAVAILABLE"
 
     private LocalDateTime createdAt;

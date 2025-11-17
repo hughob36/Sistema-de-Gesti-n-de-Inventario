@@ -21,8 +21,8 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
-    private String code; // SKU o código único del producto
+    @Column(nullable = false, unique = true)
+    private Long productId; // SKU o código único del producto
 
     @Column(nullable = false, length = 200)
     private String name;
