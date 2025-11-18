@@ -27,24 +27,18 @@ public class StockRecord {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private StockStatus status; // AVAILABLE, RESERVED, OUT_OF_STOCK
+    private StockStatus status; // AVAILABLE, OUT_OF_STOCK
 
     @Column(name = "last_update")
     private LocalDateTime lastUpdate;
-
-    @Column(name = "reserved_quantity")
-    private Integer reservedQuantity = 0; // Cantidad reservada para pedidos
 
     @PrePersist
     @PreUpdate
     protected void onCreateOrUpdate() {
         lastUpdate = LocalDateTime.now();
-
         // Actualizar estado basado en cantidad
         if (quantity <= 0) {
             status = StockStatus.OUT_OF_STOCK;
-        } else if (reservedQuantity > 0 && reservedQuantity == quantity) {
-            status = StockStatus.RESERVED;
         } else {
             status = StockStatus.AVAILABLE;
         }
