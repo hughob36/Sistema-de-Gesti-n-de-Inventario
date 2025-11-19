@@ -11,7 +11,7 @@ import com.product_service.product_service.repository.IProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,8 +29,6 @@ public class ProductService implements IProductService{
 
         List<Product> products = productRepository.findAll();
         List<ProductResponseDTO> productDTOs = productMapper.toProductResponseDTOList(products);
-
-        // Obtener lista de stocks del Feign
         List<StockResponseDTO> stockList = stockClient.findAll();
 
         // Convertir stock list → mapa para buscar rápido
@@ -44,13 +42,12 @@ public class ProductService implements IProductService{
 
             if (stock != null) {
                 dto.setStock(stock.getQuantity());
-                dto.setStockStatus(stock.getStatus());
+                dto.setStatus(stock.getStatus());
             } else {
                 dto.setStock(0);
-                dto.setStockStatus("UNAVAILABLE");
+                dto.setStatus("UNAVAILABLE");
             }
         }
-
         return productDTOs;
     }
 

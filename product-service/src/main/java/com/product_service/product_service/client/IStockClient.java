@@ -13,6 +13,6 @@ public interface IStockClient {
     @GetMapping("/stock")
     public List<StockResponseDTO> findAll();
 
-    @GetMapping("/stock/{productId}")
+    @GetMapping("/stock/product/{productId}")
     public StockResponseDTO findByProductId(@PathVariable Long productId);
 }

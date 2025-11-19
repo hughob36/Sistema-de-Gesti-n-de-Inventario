@@ -39,14 +39,21 @@ public class Product {
     @Column(nullable = false)
     private Boolean active = true; // Producto activo/inactivo
 
-    @Column(name = "min_stock")
-    private Integer minStock; // Stock mínimo para alertas
-
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+            /*productId": 1,
+            "name": "Producto de ejemplo",
+            "description": "Descripción breve del producto de ejemplo.",
+            "price": 19.99,
+            "category": "Electrónica",
+            "active": true,
+            "minStock": 10*/
+
+
 
     @PrePersist
     protected void onCreate() {

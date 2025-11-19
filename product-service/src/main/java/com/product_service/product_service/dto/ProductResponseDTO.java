@@ -21,11 +21,10 @@ public class ProductResponseDTO {
     private BigDecimal price;
     private String category;
     private Boolean active;
-    private Integer minStock;
 
     // Información de stock (viene del stock-check-service)
     private Integer stock;
-    private String stockStatus; // "AVAILABLE", "LOW_STOCK", "OUT_OF_STOCK", "UNAVAILABLE"
+    private String status; // "AVAILABLE","OUT_OF_STOCK"
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

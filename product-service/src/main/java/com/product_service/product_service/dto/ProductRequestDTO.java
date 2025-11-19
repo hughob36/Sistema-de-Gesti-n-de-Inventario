@@ -13,9 +13,8 @@ import java.math.BigDecimal;
 @Getter @Setter
 public class ProductRequestDTO {
 
-    @NotBlank(message = "Product code is required")
-    @Size(max = 50, message = "Code must not exceed 50 characters")
-    private String code;
+    @NotNull(message = "Product code is required")
+    private Long productId;
 
     @NotBlank(message = "Product name is required")
     @Size(max = 200, message = "Name must not exceed 200 characters")
@@ -35,6 +34,4 @@ public class ProductRequestDTO {
 
     private Boolean active = true;
 
-    @Min(value = 0, message = "Minimum stock must be 0 or greater")
-    private Integer minStock = 0;
 }
