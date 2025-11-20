@@ -1,5 +1,6 @@
 package com.auth.service.auth_service.controller;
 
+import com.auth.service.auth_service.dto.PermissionRequestDTO;
 import com.auth.service.auth_service.dto.PermissionResponseDTO;
 import com.auth.service.auth_service.model.Permission;
 import com.auth.service.auth_service.service.IPermissionService;
@@ -27,14 +28,14 @@ public class PermissionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Permission> getPermissionFindById(@PathVariable Long id) {
+    public ResponseEntity<PermissionResponseDTO> getPermissionFindById(@PathVariable Long id) {
         return ResponseEntity.ok(permissionService.findBYId(id));
     }
 
     @PostMapping
-    public ResponseEntity<Permission> createPermission(@RequestBody @Valid Permission permission) {
+    public ResponseEntity<PermissionResponseDTO> createPermission(@RequestBody @Valid PermissionRequestDTO permissionRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(permissionService.save(permission));
+                .body(permissionService.save(permissionRequestDTO));
     }
 
     @DeleteMapping("/{id}")
@@ -44,8 +45,8 @@ public class PermissionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Permission> updatePermissionById(@PathVariable Long id, @RequestBody Permission permission) {
-        return ResponseEntity.ok(permissionService.updateById(id,permission));
+    public ResponseEntity<PermissionResponseDTO> updatePermissionById(@PathVariable Long id, @RequestBody @Valid PermissionRequestDTO permissionRequestDTO) {
+        return ResponseEntity.ok(permissionService.updateById(id,permissionRequestDTO));
     }
 
 }

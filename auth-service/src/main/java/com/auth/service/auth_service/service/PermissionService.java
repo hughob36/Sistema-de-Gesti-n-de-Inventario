@@ -1,5 +1,6 @@
 package com.auth.service.auth_service.service;
 
+import com.auth.service.auth_service.dto.PermissionRequestDTO;
 import com.auth.service.auth_service.dto.PermissionResponseDTO;
 import com.auth.service.auth_service.exception.ResourceNotFoundException;
 import com.auth.service.auth_service.mapper.IPermissionMapper;
@@ -21,18 +22,20 @@ public class PermissionService implements IPermissionService{
 
     @Override
     public List<PermissionResponseDTO> findAll() {
-        return permissionMapper.toPermissionResponseDTO(permissionRepository.findAll());
+        return permissionMapper.toPermissionResponseDTOList(permissionRepository.findAll());
     }
 
     @Override
-    public Permission findBYId(Long id) {
-        return permissionRepository.findById(id)
+    public PermissionResponseDTO findBYId(Long id) {
+        Permission permission = permissionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Resource not found."));
+        return permissionMapper.toPermissionResponseDTO(permission);
     }
 
     @Override
-    public Permission save(Permission permission) {
-        return permissionRepository.save(permission);
+    public PermissionResponseDTO save(PermissionRequestDTO permissionRequestDTO) {
+        Permission permission = permissionMapper.toPermission(permissionRequestDTO);
+        return permissionMapper.toPermissionResponseDTO(permissionRepository.save(permission));
     }
 
     @Override
@@ -44,9 +47,10 @@ public class PermissionService implements IPermissionService{
     }
 
     @Override
-    public Permission updateById(Long id, Permission permission) {
-        Permission permissionFound = this.findBYId(id);
-        permissionFound.setPermissionName(permission.getPermissionName());
-        return permissionRepository.save(permissionFound);
+    public PermissionResponseDTO updateById(Long id, PermissionRequestDTO permissionRequestDTO) {
+        Permission permissionFound = permissionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Resource not found."));
+        permissionMapper.updatePermissionFromDto(permissionRequestDTO,permissionFound);
+        return permissionMapper.toPermissionResponseDTO(permissionRepository.save(permissionFound));
     }
 }
