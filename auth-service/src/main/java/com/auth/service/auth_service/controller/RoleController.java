@@ -1,7 +1,9 @@
 package com.auth.service.auth_service.controller;
 
-import com.auth.service.auth_service.model.Role;
+import com.auth.service.auth_service.dto.RoleRequestDTO;
+import com.auth.service.auth_service.dto.RoleResponseDTO;
 import com.auth.service.auth_service.service.IRoleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,19 +19,19 @@ public class RoleController {
     private final IRoleService roleService;
 
     @GetMapping
-    public ResponseEntity<List<Role>> getAllRole() {
+    public ResponseEntity<List<RoleResponseDTO>> getAllRole() {
         return ResponseEntity.ok(roleService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Role> getRoleById(@PathVariable long id, @RequestBody Role role) {
+    public ResponseEntity<RoleResponseDTO> getRoleById(@PathVariable long id) {
         return ResponseEntity.ok(roleService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Role> createRole(@RequestBody Role role) {
+    public ResponseEntity<RoleResponseDTO> createRole(@RequestBody @Valid RoleRequestDTO roleRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(roleService.save(role));
+                .body(roleService.save(roleRequestDTO));
     }
 
     @DeleteMapping("/{id}")
@@ -39,8 +41,8 @@ public class RoleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Role> updateRRoleById(@PathVariable Long id, @RequestBody Role role) {
-        return ResponseEntity.ok(roleService.updateById(id,role));
+    public ResponseEntity<RoleResponseDTO> updateRoleById(@PathVariable Long id, @RequestBody @Valid RoleRequestDTO roleRequestDTO) {
+        return ResponseEntity.ok(roleService.updateById(id,roleRequestDTO));
     }
 
 }

@@ -17,7 +17,7 @@ import java.util.Set;
 public class RoleRequestDTO {
 
     @NotBlank(message = "Role cannot be empty.")
-    @Size(min = 3, max = 40, message = "Role must be between 3 and 50 characters.")
+    @Size(min = 2, max = 40, message = "Role must be between 3 and 50 characters.")
     private String role;
 
     private Set<Permission> permissionSet = new HashSet<>();

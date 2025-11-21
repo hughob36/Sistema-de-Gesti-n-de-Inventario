@@ -1,6 +1,9 @@
 package com.auth.service.auth_service.service;
 
+import com.auth.service.auth_service.dto.RoleRequestDTO;
+import com.auth.service.auth_service.dto.RoleResponseDTO;
 import com.auth.service.auth_service.exception.ResourceNotFoundException;
+import com.auth.service.auth_service.mapper.IRoleMapper;
 import com.auth.service.auth_service.model.Permission;
 import com.auth.service.auth_service.model.Role;
 import com.auth.service.auth_service.repository.IPermissionRepository;
@@ -18,22 +21,25 @@ public class RoleService implements IRoleService {
 
     private final IRoleRepository roleRepository;
     private final IPermissionRepository permissionRepository;
+    private final IRoleMapper roleMapper;
 
     @Override
-    public List<Role> findAll() {
-        return roleRepository.findAll();
+    public List<RoleResponseDTO> findAll() {
+        return roleMapper.toRoleResponseDTOList(roleRepository.findAll());
     }
 
     @Override
-    public Role findById(Long id) {
-        return roleRepository.findById(id)
+    public RoleResponseDTO findById(Long id) {
+        Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found."));
+        return roleMapper.toRoleResponseDTO(role);
     }
 
     @Override
-    public Role save(Role role) {
+    public RoleResponseDTO save(RoleRequestDTO roleRequestDTO) {
+        Role role = roleMapper.toRole(roleRequestDTO);
         Role roleValidate = this.validatePermissionsExists(role);
-        return roleRepository.save(roleValidate);
+        return roleMapper.toRoleResponseDTO(roleRepository.save(roleValidate));
     }
 
     @Override
@@ -45,17 +51,18 @@ public class RoleService implements IRoleService {
     }
 
     @Override
-    public Role updateById(Long id, Role role) {
-        Role roleFound = this.findById(id);
-        roleFound.setRole(role.getRole());
+    public RoleResponseDTO updateById(Long id, RoleRequestDTO roleRequestDTO) {
+        Role roleFound = roleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found."));
+        roleMapper.updateRoleFromDTO(roleRequestDTO,roleFound);
         Role roleValidate = this.validatePermissionsExists(roleFound);
-        return roleRepository.save(roleValidate);
+        return roleMapper.toRoleResponseDTO(roleRepository.save(roleValidate));
     }
 
     public Role validatePermissionsExists(Role role) {
         Set<Permission> permissionSet = new HashSet<>();
         for(Permission permission : role.getPermissionSet()) {
-            permissionRepository.findById(role.getId()).ifPresent(permissionSet::add);
+            permissionRepository.findById(permission.getId()).ifPresent(permissionSet::add);
         }
         role.setPermissionSet(permissionSet);
         return role;
